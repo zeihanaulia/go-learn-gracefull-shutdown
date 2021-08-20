@@ -81,17 +81,19 @@ func (s *server) routers() {
 		log.Fatal("err")
 	})
 
-	s.router.Get("/slow", func(w http.ResponseWriter, r *http.Request) {
-		// Simulates some hard work.
-		//
-		// We want this handler to complete successfully during a shutdown signal,
-		// so consider the work here as some background routine to fetch a long running
-		// search query to find as many results as possible, but, instead we cut it short
-		// and respond with what we have so far. How a shutdown is handled is entirely
-		// up to the developer, as some code blocks are preemptable, and others are not.
-		time.Sleep(10 * time.Second)
+	s.router.Route("/v1", func(router chi.Router) {
+		router.Get("/slow", func(w http.ResponseWriter, r *http.Request) {
+			// Simulates some hard work.
+			//
+			// We want this handler to complete successfully during a shutdown signal,
+			// so consider the work here as some background routine to fetch a long running
+			// search query to find as many results as possible, but, instead we cut it short
+			// and respond with what we have so far. How a shutdown is handled is entirely
+			// up to the developer, as some code blocks are preemptable, and others are not.
+			time.Sleep(10 * time.Second)
 
-		w.Write([]byte(fmt.Sprintf("all done.\n")))
+			w.Write([]byte(fmt.Sprintf("all done.\n")))
+		})
 	})
 
 }
