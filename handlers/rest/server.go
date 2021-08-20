@@ -14,15 +14,18 @@ import (
 	"github.com/go-chi/chi/middleware"
 )
 
-type server struct{}
+type server struct {
+	router *chi.Mux
+}
 
 func NewServer() *server {
-	return &server{}
+	return &server{router: chi.NewRouter()}
 }
 
 func (s *server) Run() error {
 	// The HTTP Server
-	server := &http.Server{Addr: "0.0.0.0:3333", Handler: service()}
+	s.routers()
+	server := &http.Server{Addr: "0.0.0.0:3333", Handler: s.router}
 
 	// Server run context
 	serverCtx, serverStopCtx := context.WithCancel(context.Background())
@@ -65,21 +68,20 @@ func (s *server) Run() error {
 	return nil
 }
 
-func service() http.Handler {
-	r := chi.NewRouter()
+func (s *server) routers() {
 
-	r.Use(middleware.RequestID)
-	r.Use(middleware.Logger)
+	s.router.Use(middleware.RequestID)
+	s.router.Use(middleware.Logger)
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	s.router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("sup"))
 	})
 
-	r.Get("/exit", func(w http.ResponseWriter, r *http.Request) {
+	s.router.Get("/exit", func(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("err")
 	})
 
-	r.Get("/slow", func(w http.ResponseWriter, r *http.Request) {
+	s.router.Get("/slow", func(w http.ResponseWriter, r *http.Request) {
 		// Simulates some hard work.
 		//
 		// We want this handler to complete successfully during a shutdown signal,
@@ -92,5 +94,4 @@ func service() http.Handler {
 		w.Write([]byte(fmt.Sprintf("all done.\n")))
 	})
 
-	return r
 }
