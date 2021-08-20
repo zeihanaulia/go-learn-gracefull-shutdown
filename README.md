@@ -50,3 +50,20 @@ Hanya akan menunggu process selesai selama 30 detik. Lebih dari itu akan langsun
 	}()
 ```
 
+
+## Cases
+
+### Gracefull Shutdown Using Cobra CLI
+
+Terkadang dengan memanfaatkan cobra cli kita design code kita seperti ini.
+
+```bash
+- cmd
+	- root.go
+	- rest.go
+- handlers
+	- server.go
+- main.go
+```
+
+Kita tidak meletakan server di file main.go seperti sebelumnya.
