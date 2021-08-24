@@ -1,5 +1,7 @@
 # Learn gracefull shutdown
 
+Kenapa harus menegetahui praktik ini. Karena masuk kedalam [12 factor app](https://12factor.net/disposability) pada bagian disposable
+
 Gracefull shutdown akan menunggu service memproses hingga waktu jeda yang ditentukan.
 Misalnya rata rata proses dari service yang berjalan adalah 20 detik. 
 Maka kita bisa membuat timeout dengan bantuan `context.WithTimeout(serverCtx, 30*time.Second)`
@@ -50,3 +52,33 @@ Hanya akan menunggu process selesai selama 30 detik. Lebih dari itu akan langsun
 	}()
 ```
 
+## Build docker
+
+```
+docker build -t glgs-http-server  .
+docker tag glgs-http-server zeihanaulia/glgs-http-server:1.0.0
+```
+
+## Run using kubernetes.
+
+```
+ kubectl apply -f http-server.yml
+
+ -- RESTART
+ kubectl rollout restart deployments/glgs-http-server
+
+ -- Check logs
+ kubectl logs -f deployments/glgs-http-server
+
+ -- delete service
+kubectl delete deployment glgs-http-server
+
+-- check
+kubectl get pods
+kubectl get service
+kubectl get deployments
+```
+
+## Referensi
+
+- https://learnk8s.io/graceful-shutdown

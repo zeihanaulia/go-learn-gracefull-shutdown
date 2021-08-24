@@ -63,6 +63,9 @@ func service() http.Handler {
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
 
+	r.Get("/health", healthHandler)
+	r.Get("/readiness", readinessHandler)
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("sup"))
 	})
@@ -79,10 +82,18 @@ func service() http.Handler {
 		// search query to find as many results as possible, but, instead we cut it short
 		// and respond with what we have so far. How a shutdown is handled is entirely
 		// up to the developer, as some code blocks are preemptable, and others are not.
-		time.Sleep(10 * time.Second)
+		time.Sleep(40 * time.Second)
 
 		w.Write([]byte(fmt.Sprintf("all done.\n")))
 	})
 
 	return r
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
+
+func readinessHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }
