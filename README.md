@@ -18,7 +18,7 @@ signal termination yang biasanya didengar:
 
 - [SIGHUP](https://en.wikipedia.org/wiki/SIGHUP)
 - [SIGINT](https://dsa.cs.tsinghua.edu.cn/oj/static/unix_signal.html#:~:text=The%20SIGINT%20signal%20is%20sent,break%22%20key%20can%20be%20used.&text=The%20SIGKILL%20signal%20is%20sent,to%20terminate%20immediately%20(kill).)   = Terminate dengan ctrl + c
-- [SIGTERM](https://en.wikipedia.org/wiki/SIGTERM)
+- [SIGTERM](https://en.wikipedia.org/wiki/SIGTERM) = Membaca sinyal dari kubernetes atau docker
 - [SIGQUIT](https://en.wikipedia.org/wiki/SIGQUIT)
 
 Bisa baca disini https://dsa.cs.tsinghua.edu.cn/oj/static/unix_signal.html.
@@ -52,6 +52,22 @@ Hanya akan menunggu process selesai selama 30 detik. Lebih dari itu akan langsun
 	}()
 ```
 
+## Cases
+
+### Gracefull Shutdown Using Cobra CLI
+
+Terkadang dengan memanfaatkan cobra cli kita design code kita seperti ini.
+
+```bash
+- cmd
+	- root.go
+	- rest.go
+- handlers
+	- server.go
+- main.go
+```
+
+Kita tidak meletakan server di file main.go seperti sebelumnya.
 ## Build docker
 
 ```
