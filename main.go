@@ -15,7 +15,9 @@ limitations under the License.
 */
 package main
 
-import "github.com/zeihanaulia/go-learn-gracefull-shutdown/cmd"
+import (
+	"github.com/zeihanaulia/go-learn-gracefull-shutdown/cmd"
+)
 
 func main() {
 	cmd.Execute()

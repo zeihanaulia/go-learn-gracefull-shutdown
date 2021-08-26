@@ -1,5 +1,7 @@
 # Learn gracefull shutdown
 
+Kenapa harus menegetahui praktik ini. Karena masuk kedalam [12 factor app](https://12factor.net/disposability) pada bagian disposable
+
 Gracefull shutdown akan menunggu service memproses hingga waktu jeda yang ditentukan.
 Misalnya rata rata proses dari service yang berjalan adalah 20 detik. 
 Maka kita bisa membuat timeout dengan bantuan `context.WithTimeout(serverCtx, 30*time.Second)`
@@ -16,7 +18,7 @@ signal termination yang biasanya didengar:
 
 - [SIGHUP](https://en.wikipedia.org/wiki/SIGHUP)
 - [SIGINT](https://dsa.cs.tsinghua.edu.cn/oj/static/unix_signal.html#:~:text=The%20SIGINT%20signal%20is%20sent,break%22%20key%20can%20be%20used.&text=The%20SIGKILL%20signal%20is%20sent,to%20terminate%20immediately%20(kill).)   = Terminate dengan ctrl + c
-- [SIGTERM](https://en.wikipedia.org/wiki/SIGTERM)
+- [SIGTERM](https://en.wikipedia.org/wiki/SIGTERM) = Membaca sinyal dari kubernetes atau docker
 - [SIGQUIT](https://en.wikipedia.org/wiki/SIGQUIT)
 
 Bisa baca disini https://dsa.cs.tsinghua.edu.cn/oj/static/unix_signal.html.
@@ -50,7 +52,6 @@ Hanya akan menunggu process selesai selama 30 detik. Lebih dari itu akan langsun
 	}()
 ```
 
-
 ## Cases
 
 ### Gracefull Shutdown Using Cobra CLI
@@ -67,3 +68,33 @@ Terkadang dengan memanfaatkan cobra cli kita design code kita seperti ini.
 ```
 
 Kita tidak meletakan server di file main.go seperti sebelumnya.
+## Build docker
+
+```
+docker build -t glgs-http-server  .
+docker tag glgs-http-server zeihanaulia/glgs-http-server:1.0.0
+```
+
+## Run using kubernetes.
+
+```
+ kubectl apply -f http-server.yml
+
+ -- RESTART
+ kubectl rollout restart deployments/glgs-http-server
+
+ -- Check logs
+ kubectl logs -f deployments/glgs-http-server
+
+ -- delete service
+kubectl delete deployment glgs-http-server
+
+-- check
+kubectl get pods
+kubectl get service
+kubectl get deployments
+```
+
+## Referensi
+
+- https://learnk8s.io/graceful-shutdown

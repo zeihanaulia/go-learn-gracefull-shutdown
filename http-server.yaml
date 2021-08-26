@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment               
+metadata:
+  name: glgs-http-server    
+spec:         
+  selector:
+    matchLabels:
+      app: glgs-http-server       
+  template:                      
+    metadata:
+      labels:                    
+        app: glgs-http-server
+    spec:                        
+      containers:
+      - name: glgs-http-server
+        image: zeihanaulia/glgs-http-server:1.0.0
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: "1"
+          requests:
+            memory: 256Mi
+            cpu: "0.2" 
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 3333 
+        livenessProbe:           
+          httpGet:
+            path: /health
+            port: 3333
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:          
+          httpGet:
+            path: /readiness
+            port: 3333
+            scheme: HTTP
+          initialDelaySeconds: 5
+          timeoutSeconds: 1    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: glgs-http-server-service
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 3333
+    targetPort: 3333
+  selector:
+    app: glgs-http-server
