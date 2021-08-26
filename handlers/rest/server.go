@@ -57,6 +57,7 @@ func (s *server) Run() error {
 	}()
 
 	// Run the server
+	log.Println("Server run on http://localhost:3333")
 	err := server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
 		return err
