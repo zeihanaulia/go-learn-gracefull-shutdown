@@ -90,7 +90,7 @@ func (s *server) routers() {
 			// search query to find as many results as possible, but, instead we cut it short
 			// and respond with what we have so far. How a shutdown is handled is entirely
 			// up to the developer, as some code blocks are preemptable, and others are not.
-			time.Sleep(10 * time.Second)
+			time.Sleep(30 * time.Second)
 
 			w.Write([]byte(fmt.Sprintf("all done.\n")))
 		})
